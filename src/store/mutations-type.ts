@@ -1,0 +1,10 @@
+export const GET_ALBUM = 'get_album'
+
+export const ADD_SONG = 'add_song'
+export const SET_PLAY = 'set_play'
+export const REMOVE_ALL_SONG = 'remove_all_song'
+export const SET_CURRENT = 'set_current'
+export const STORE_CURRENT = 'store_current'
+export const SET_INDEX = 'set_index'
+export const SET_STATUS = 'set_status'
+export const SYNC_TIME = 'sync_time'
