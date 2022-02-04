@@ -20,23 +20,28 @@
     </div>
     <div class="sheet-menu">
       <div class="title">
-        <a>歌曲列表</a>
-        <a>评论({{ info.commentCount }})</a>
-        <a>收藏者</a>
+        <a @click.prevent="$router.push({ name: 'SheetSing' })">歌曲列表</a>
+        <a @click.prevent="$router.push({ name: 'SheetComment' })">评论({{ info.commentCount }})</a>
+        <a @click.prevent="$router.push({ name: 'SheetFavour' })">收藏者</a>
       </div>
-      <div class="search">
+      <!-- <div class="search">
         <input type="text" placeholder="请输入要搜索的内容" id="sheet-sea">
         <label for="sheet-sea"><i class="iconfont icon-search"></i></label>
-      </div>
+      </div> -->
     </div>
-    <SheetSings :songs="songs"/>
+    <router-view v-slot="{ Component }">
+      <!-- <transition> -->
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      <!-- </transition> -->
+    </router-view>
   </div>
 </template>
 <script>
 import { defineComponent, markRaw, onMounted, reactive, toRefs, watch } from '@vue/runtime-core'
 import dayjs from 'dayjs'
 import request from '@/api/request'
-import SheetSings from '@/components/singsheet/SheetSings.vue'
 export default defineComponent({
   name: 'SingleSheet',
   props: {
@@ -49,8 +54,8 @@ export default defineComponent({
     const state = reactive({
       info: {},
       detail: {},
-      createTime: '',
-      songs: []
+      createTime: ''
+      // songs: []
     })
     // 获取歌单详细和歌单所有歌曲
     const getSheetAll = async () => {
@@ -59,24 +64,24 @@ export default defineComponent({
       state.info = markRaw(sheetInfo)
       state.detail = markRaw(sheetSongs.playlist)
       state.createTime = dayjs(state.detail.creator.createTime).format('YYYY-MM-DD')
-      const songsId = sheetSongs.playlist.trackIds.map(track => {
-        track = track.id
-        return track
-      })
+      // const songsId = sheetSongs.playlist.trackIds.map(track => {
+      //   track = track.id
+      //   return track
+      // })
       // state.songsId = markRaw(songsId)
-      const songs = await request('/song/detail', { ids: songsId.join(',') })
-      const songsurl = await request('/song/url', { id: songsId.join(',') })
-      if (songs.songs && songsurl.data) {
-        for (let i = 0; i < songs.songs.length; i++) {
-          for (let j = 0; j < songsurl.data.length; j++) {
-            if (songs.songs[i].id === songsurl.data[j].id) {
-              songs.songs[i].mp3url = songsurl.data[j]
-              break
-            }
-          }
-        }
-      }
-      state.songs = markRaw(songs.songs)
+      // const songs = await request('/song/detail', { ids: songsId.join(',') })
+      // const songsurl = await request('/song/url', { id: songsId.join(',') })
+      // if (songs.songs && songsurl.data) {
+      //   for (let i = 0; i < songs.songs.length; i++) {
+      //     for (let j = 0; j < songsurl.data.length; j++) {
+      //       if (songs.songs[i].id === songsurl.data[j].id) {
+      //         songs.songs[i].mp3url = songsurl.data[j]
+      //         break
+      //       }
+      //     }
+      //   }
+      // }
+      // state.songs = markRaw(songs.songs)
     }
 
     onMounted(() => {
@@ -90,9 +95,6 @@ export default defineComponent({
     return {
       ...toRefs(state)
     }
-  },
-  components: {
-    SheetSings
   }
 })
 </script>
@@ -129,6 +131,8 @@ export default defineComponent({
       h2{
         display: flex;
         align-items: center;
+        justify-content: center;
+        width: 100%;
         margin-top: 0;
         color: #fff;
         span{
@@ -136,11 +140,10 @@ export default defineComponent({
           color: orange;
           margin-right: 5px;
           font-size: 12px;
-          padding: 0 3px;
+          padding: 0 2px;
           letter-spacing: 1px;
           font-weight: normal;
           text-align: center;
-          width: 8%;
         }
       }
       img{
@@ -207,32 +210,32 @@ export default defineComponent({
         cursor: pointer;
       }
     }
-    .search{
-      width: 220px;
-      height: 30px;
-      border-radius: 20px;
-      overflow: hidden;
-      input{
-        width: 80%;
-        height: 105%;
-        outline: none;
-        margin: 0;
-        padding: 0;
-        border: none;
-        padding-left: 20px;
-        box-sizing: border-box;
-        color: #666;
-        font-size: 14px;
-      }
-      label{
-        display: inline-block;
-        width: 20%;
-        height: 100%;
-        line-height: 30px;
-        background: #fff;
-        text-align: center;
-      }
-    }
+    // .search{
+    //   width: 220px;
+    //   height: 30px;
+    //   border-radius: 20px;
+    //   overflow: hidden;
+    //   input{
+    //     width: 80%;
+    //     height: 100%;
+    //     outline: none;
+    //     margin: 0;
+    //     padding: 0;
+    //     border: none;
+    //     padding-left: 20px;
+    //     box-sizing: border-box;
+    //     color: #666;
+    //     font-size: 15px;
+    //   }
+    //   label{
+    //     display: inline-block;
+    //     width: 20%;
+    //     height: 100%;
+    //     line-height: 30px;
+    //     background: #fff;
+    //     text-align: center;
+    //   }
+    // }
   }
 }
 </style>

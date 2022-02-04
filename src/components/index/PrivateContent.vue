@@ -58,7 +58,7 @@ export default defineComponent({
       .item-image{
         width: 100%;
         height: auto;
-        box-sizing: border-box;
+        // box-sizing: border-box;
         border-radius: 10px;
         overflow: hidden;
         position: relative;

@@ -43,7 +43,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .left{
-  width: 26%;
+  width: 24%;
   height: 100%;
   background: #fff;
   margin-right: 1%;
@@ -77,7 +77,7 @@ export default defineComponent({
         transition: all .6s ease-in-out;
         cursor: pointer;
         img{
-          width: 34%;
+          width: 30%;
           margin-right: 10%;
         }
         .item-info{

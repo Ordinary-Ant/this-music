@@ -42,7 +42,7 @@ export default defineComponent({
       //   state.recommends.push({ name: recomm.categoryName, list: temp.djRadios.slice(0, 10) })
       // })
 
-      // console.log(state)
+      console.log(state)
     }
     onMounted(() => {
       getAllStation()

@@ -1,7 +1,7 @@
 <template>
   <div class="comment-container" v-if="comment">
     <div class="comment-send">
-      <h2>评论<span>(已有{{ comment.total }}条评论)</span></h2>
+      <h2>评论<span v-show="comment.total">(已有{{ comment.total }}条评论)</span></h2>
       <textarea class="send">
       </textarea>
       <i class="iconfont icon-edit"></i>

@@ -7,7 +7,7 @@
     <div class="elite-list">
       <div class="elite-item" v-for="sheet in recommSheet" :key="sheet.id">
         <div class="item-img">
-          <img :src="sheet.coverImgUrl + '?param=325y325'" alt="" @click="$router.push('/singlesheet')">
+          <img :src="sheet.coverImgUrl + '?param=325y325'" alt="" @click="$router.push(`/singlesheet/${sheet.id}`)">
         </div>
         <span class="left"><i class="iconfont icon-huangguan"></i></span>
         <span class="right"><i class="iconfont icon-bofangliang"></i>{{ sheet.playCount }}</span>

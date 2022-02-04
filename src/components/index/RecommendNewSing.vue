@@ -51,10 +51,10 @@ export default defineComponent({
     margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    // justify-content: space-between;
     .list-item{
       display: flex;
-      width: 24%;
+      width: 25%;
       margin-bottom: 20px;
       .item-image{
         width: 90px;

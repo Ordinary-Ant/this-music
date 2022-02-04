@@ -12,6 +12,9 @@ const Sole = () => import(/* webpackChunkName: "Sole" */ '../views/sole/Sole.vue
 const Video = () => import(/* webpackChunkName: "Video" */ '../views/video/Video.vue')
 const Friends = () => import(/* webpackChunkName: "Friends" */ '../views/friends/Friends.vue')
 const SingleSheet = () => import(/* webpackChunkName: "SingleSheet" */ '../views/singsheet/SingleSheet.vue')
+const SheetSing = () => import(/* webpackChunkName: "SheetSing" */ '../views/singsheet/SheetSing.vue')
+const SheetComment = () => import(/* webpackChunkName: "SheetComment" */ '../views/singsheet/SheetComment.vue')
+const SheetFavour = () => import(/* webpackChunkName: "SheetFavour" */ '../views/singsheet/SheetFavour.vue')
 const SingerDetail = () => import(/* webpackChunkName: "SingerDetail" */ '../views/singer/SingerDetail.vue')
 const PrivateFM = () => import(/* webpackChunkName: "PrivateFM" */ '../views/privatefm/PrivateFM.vue')
 const Player = () => import(/* webpackChunkName: "Player" */ '../views/player/Player.vue')
@@ -83,7 +86,31 @@ const routes: Array<RouteRecordRaw> = [
         path: 'singlesheet/:id',
         name: 'SingleSheet',
         component: SingleSheet,
-        props: true
+        props: true,
+        children: [
+          {
+            path: '',
+            redirect: { name: 'SheetSing' }
+          },
+          {
+            path: 'sheetsing',
+            name: 'SheetSing',
+            component: SheetSing,
+            props: true
+          },
+          {
+            path: 'sheetcomment',
+            name: 'SheetComment',
+            component: SheetComment,
+            props: true
+          },
+          {
+            path: 'sheetfavour',
+            name: 'SheetFavour',
+            component: SheetFavour,
+            props: true
+          }
+        ]
       },
       {
         path: 'singerdetail/:id',

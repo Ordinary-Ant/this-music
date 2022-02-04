@@ -5,7 +5,7 @@
       <div class="classes" v-for="(items, index) in Category" :key="index">
         <span>{{ CategoryName[index] }}</span>
         <ul>
-          <li v-for="(item, index) in items" :key="index"><a>{{ item.name }}</a></li>
+          <li v-for="(item, index) in items" :key="index"><a @click="handleSetCat(item.name)">{{ item.name }}</a></li>
         </ul>
       </div>
     </div>
@@ -26,25 +26,41 @@ export default defineComponent({
       ],
       recommSheet: [],
       allSheet: [],
-      CategoryName: ['语言', '风格', '场景', '情感', '主题']
+      CategoryName: ['语言', '风格', '场景', '情感', '主题'],
+      cat: ''
     })
     // 获取所有歌单和精品歌单
-    const getSheets = async () => {
+    const getSheetsState = async () => {
       const allCategory = await request('/playlist/catlist')
       const sheetList = await request('/top/playlist/highquality', { limit: 4 })
-      const allSheet = await request('/top/playlist', { limit: 24 })
+      getSheets()
       state.recommSheet = markRaw(sheetList.playlists)
-      state.allSheet = markRaw(allSheet.playlists)
       allCategory.sub.forEach(c => {
         state.Category[c.category].push(c)
       })
     }
 
-    onMounted(() => {
+    const getSheets = async () => {
+      let allSheet = []
+      if (state.cat !== '') {
+        allSheet = await request('/top/playlist', { cat: state.cat, limit: 24 })
+      } else {
+        allSheet = await request('/top/playlist', { limit: 24 })
+      }
+      state.allSheet = allSheet.playlists
+    }
+
+    const handleSetCat = (name) => {
+      state.cat = name
       getSheets()
+    }
+
+    onMounted(() => {
+      getSheetsState()
     })
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      handleSetCat
     }
   },
   components: {

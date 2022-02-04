@@ -1,7 +1,7 @@
 <template>
   <div class="sheetlist-container">
     <div class="sheetlist-item" v-for="sheet in allSheet" :key="sheet.id">
-      <div class="sheetlist-img">
+      <div class="sheetlist-img" @click="$router.push(`/singlesheet/${sheet.id}`)">
         <img :src="sheet.coverImgUrl + '?param=332y332'" alt="">
       </div>
       <span><i class="iconfont icon-bofangliang"></i>{{ sheet.playCount }}</span>

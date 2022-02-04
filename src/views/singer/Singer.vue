@@ -3,27 +3,27 @@
     <div class="singer-class">
       <div class="local">
         <span>地区</span>
-        <ul>
-            <li><a>全部</a></li>
-            <li><a>华语</a></li>
-            <li><a>欧美</a></li>
-            <li><a>日本</a></li>
-            <li><a>韩国</a></li>
-            <li><a>其他</a></li>
+        <ul @click="handleSetArea">
+            <li><a data-area="-1">全部</a></li>
+            <li><a data-area="7">华语</a></li>
+            <li><a data-area="96">欧美</a></li>
+            <li><a data-area="8">日本</a></li>
+            <li><a data-area="16">韩国</a></li>
+            <li><a data-area="0">其他</a></li>
         </ul>
       </div>
       <div class="gender">
         <span>类别</span>
-        <ul>
-            <li><a>全部</a></li>
-            <li><a>男歌手</a></li>
-            <li><a>女歌手</a></li>
-            <li><a>乐队组合</a></li>
+        <ul @click="handleSetType">
+            <li><a data-type="-1">全部</a></li>
+            <li><a data-type="1">男歌手</a></li>
+            <li><a data-type="2">女歌手</a></li>
+            <li><a data-type="3">乐队组合</a></li>
         </ul>
       </div>
       <div class="initial">
         <span>筛选</span>
-        <ul>
+        <ul @click="handleSetInitial">
             <li><a>A</a></li>
             <li><a>B</a></li>
             <li><a>C</a></li>
@@ -58,26 +58,55 @@
   </div>
 </template>
 <script>
-import { defineComponent, markRaw, onMounted, reactive, toRefs } from '@vue/runtime-core'
+import { defineComponent, onMounted, reactive, toRefs } from '@vue/runtime-core'
 import SingerList from '@/components/singer/SingerList.vue'
 import request from '@/api/request'
 export default defineComponent({
   name: 'Singer',
   setup () {
     const state = reactive({
-      singers: []
+      singers: [],
+      initial: '',
+      type: -1,
+      area: -1
     })
 
     // 获取所有歌手信息
     const getSingers = async () => {
-      const all = await request('/artist/list', { type: -1, area: -1, limit: 35 })
-      state.singers = markRaw(all.artists)
+      let all
+      if (state.initial !== '') {
+        all = await request('/artist/list', { type: state.type, area: state.area, initial: state.initial, limit: 35 })
+      } else {
+        all = await request('/artist/list', { type: state.type, area: state.area, limit: 35 })
+      }
+      console.log(all)
+      state.singers = all.artists
     }
+
+    // 根据类型搜索歌手
+    const handleSetType = (e) => {
+      state.type = e.target.dataset.type
+      getSingers()
+    }
+    // 根据地区搜索歌手
+    const handleSetArea = (e) => {
+      state.area = e.target.dataset.area
+      getSingers()
+    }
+    // 根据首字母搜索歌手
+    const handleSetInitial = (e) => {
+      state.initial = e.target.textContent.toLowerCase()
+      getSingers()
+    }
+
     onMounted(() => {
       getSingers()
     })
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      handleSetType,
+      handleSetArea,
+      handleSetInitial
     }
   },
   components: {

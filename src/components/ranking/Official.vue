@@ -16,7 +16,7 @@
             <span class="sing-name">{{ song.name }}</span>
             <span class="sing-ator">{{ song.ar.map(a => a.name).join('/') }}</span>
           </a>
-          <a class="more">查看全部<i class="iconfont "></i></a>
+          <a class="more" @click="$router.push(`/singlesheet/${Official.id}`)">查看全部<i class="iconfont "></i></a>
         </div>
       </div>
     </div>

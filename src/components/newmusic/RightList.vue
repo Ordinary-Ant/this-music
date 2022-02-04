@@ -47,7 +47,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .right{
-  width: 73%;
+  width: 75%;
   padding: 0 10px;
   box-sizing: border-box;
 //   background: #fff;
