@@ -1,7 +1,7 @@
 <template>
   <div class="recommend-container">
-    <div class="title">
-      推荐歌单<i class="iconfont icon-xiangyou1" @click="$router.push('/singsheet')"></i>
+    <div class="title" @click="$router.push('/singsheet')">
+      推荐歌单<i class="iconfont icon-xiangyou1"></i>
     </div>
     <div class="song-list">
       <div class="list-item" v-for="taste in hasTaste" :key="taste.id" @click="$router.push(`/singlesheet/${taste.id}`)">
@@ -40,6 +40,7 @@ export default defineComponent({
     color: #fff;
     font-size: 22px;
     font-weight: bold;
+    cursor: pointer;
     i{
       font-size: 20px;
       margin-left: 5px;

@@ -7,30 +7,30 @@
     <div class="mv-class">
       <div class="local">
         <span>地区</span>
-        <ul>
-            <li><a>全部</a></li>
-            <li><a>华语</a></li>
-            <li><a>欧美</a></li>
-            <li><a>日本</a></li>
-            <li><a>韩国</a></li>
-            <li><a>其他</a></li>
+        <ul @click="handleSetArea">
+          <li :class="area === '全部' ? 'show' : ''">全部</li>
+          <li :class="area === '华语' ? 'show' : ''">华语</li>
+          <li :class="area === '欧美' ? 'show' : ''">欧美</li>
+          <li :class="area === '日本' ? 'show' : ''">日本</li>
+          <li :class="area === '韩国' ? 'show' : ''">韩国</li>
+          <li :class="area === '其他' ? 'show' : ''">其他</li>
         </ul>
       </div>
       <div class="gender">
         <span>类别</span>
-        <ul>
-            <li><a>全部</a></li>
-            <li><a>男歌手</a></li>
-            <li><a>女歌手</a></li>
-            <li><a>乐队组合</a></li>
+        <ul @click="handleSetType">
+          <li :class="type === '全部' ? 'show' : ''">全部</li>
+          <li :class="type === '男歌手' ? 'show' : ''">男歌手</li>
+          <li :class="type === '女歌手' ? 'show' : ''">女歌手</li>
+          <li :class="type === '乐队组合' ? 'show' : ''">乐队组合</li>
         </ul>
       </div>
       <div class="sort">
         <span>排序</span>
-        <ul>
-            <li><a>上升最快</a></li>
-            <li><a>最热</a></li>
-            <li><a>最新</a></li>
+        <ul @click="handleSetOrder">
+          <li :class="order === '上升最快' ? 'show' : ''">上升最快</li>
+          <li :class="order === '最热' ? 'show' : ''">最热</li>
+          <li :class="order === '最新' ? 'show' : ''">最新</li>
         </ul>
       </div>
     </div>
@@ -47,22 +47,53 @@ export default defineComponent({
   setup () {
     const state = reactive({
       rankList: [],
-      allMv: []
+      allMv: [],
+      type: '全部',
+      area: '全部',
+      order: '上升最快'
     })
 
     // 获取所有MV数据
-    const getMV = async () => {
+    const getAllMV = async () => {
+      getMV()
       const rank = await request('/top/mv', { limit: 10 })
-      const mv = await request('/mv/all')
       state.rankList = markRaw(rank.data)
+    }
+
+    // 获取MV数据
+    const getMV = async () => {
+      const mv = await request('/mv/all', { type: state.type, area: state.area, order: state.order })
       state.allMv = markRaw(mv.data)
     }
-    onMounted(() => {
+
+    // 根据地区获取MV数据
+    const handleSetArea = (e) => {
+      if (e.target.tagName === 'UL') return
+      state.area = e.target.textContent
       getMV()
+    }
+    // 根据类型获取MV数据
+    const handleSetType = (e) => {
+      if (e.target.tagName === 'UL') return
+      state.type = e.target.textContent
+      getMV()
+    }
+    // 根据排序获取MV数据
+    const handleSetOrder = (e) => {
+      if (e.target.tagName === 'UL') return
+      state.order = e.target.textContent
+      getMV()
+    }
+
+    onMounted(() => {
+      getAllMV()
     })
 
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      handleSetArea,
+      handleSetType,
+      handleSetOrder
     }
   },
   components: {
@@ -104,10 +135,16 @@ export default defineComponent({
         list-style: none;
         margin: 0;
         li{
-          margin: 0 20px;
+          margin: 0 5px;
           color: #ccc;
           font-size: 14px;
           cursor: pointer;
+          padding: 10px;
+          border-radius: 5px;
+        }
+        .show{
+          background-image: linear-gradient(to right, #acb6e5 , #86fde8 );
+          color: #fff;
         }
       }
     }

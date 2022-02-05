@@ -1,7 +1,7 @@
 <template>
   <div class="private-container">
-    <div class="title">
-      独家放送<i class="iconfont icon-xiangyou1" @click="$router.push('/sole')"></i>
+    <div class="title" @click="$router.push('/sole')">
+      独家放送<i class="iconfont icon-xiangyou1"></i>
     </div>
     <div class="private-list">
       <div class="list-item" v-for="sole in soleDoor" :key="sole.id">
@@ -42,6 +42,7 @@ export default defineComponent({
     color: #fff;
     font-size: 22px;
     font-weight: bold;
+    cursor: pointer;
     i{
       font-size: 20px;
       margin-left: 5px;

@@ -14,19 +14,30 @@
   </div>
 </template>
 <script>
-import { defineComponent, markRaw, onMounted, reactive, toRefs } from '@vue/runtime-core'
+import { defineComponent, onMounted, reactive, toRefs, watch } from '@vue/runtime-core'
 import request from '@/api/request'
 export default defineComponent({
   name: 'RankingList',
-  setup () {
+  props: {
+    area: {
+      type: String,
+      default: ''
+    }
+  },
+  setup (props) {
     const state = reactive({
       list: []
     })
+
     // 获取mv榜信息
     const getMvRank = async () => {
-      const all = await request('/top/mv', { limit: 50 })
-      state.list = markRaw(all.data)
+      const all = await request('/top/mv', { area: props.area, limit: 50 })
+      state.list = all.data
     }
+
+    watch(() => props.area, () => {
+      getMvRank()
+    })
 
     onMounted(() => {
       getMvRank()

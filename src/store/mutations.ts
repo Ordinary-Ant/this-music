@@ -30,12 +30,14 @@ export default {
     state.playList.unshift(value)
     state.currentPlay = state.playList[0]
     window.localStorage.setItem('playlist', JSON.stringify(state.playList))
+    setIndex(state, 0)
+    storeCurrent(state.currentPlay)
   },
 
   // 删除音乐列表(一键清空时触发)
   [REMOVE_ALL_SONG] (state: any) :void {
     state.playList = []
-    state.currentPlay = {}
+    state.currentPlay = null
     state.currentPlayTime = 0
     state.currentIndex = 0
     window.localStorage.removeItem('playlist')

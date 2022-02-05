@@ -1,7 +1,7 @@
 <template>
   <div class="recommendnewsing-container">
-    <div class="title">
-      新歌上线<i class="iconfont icon-xiangyou1" @click="$router.push('/newmusic')"></i>
+    <div class="title" @click="$router.push('/newmusic')">
+      新歌上线<i class="iconfont icon-xiangyou1"></i>
     </div>
     <div class="song-list">
       <div class="list-item" v-for="sing in newSing" :key="sing.id">
@@ -42,6 +42,7 @@ export default defineComponent({
     color: #fff;
     font-size: 22px;
     font-weight: bold;
+    cursor: pointer;
     i{
       font-size: 20px;
       margin-left: 5px;

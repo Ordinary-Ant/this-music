@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, watch, reactive, markRaw, toRefs, ref, onMounted, onBeforeUnmount } from '@vue/runtime-core'
+import { defineComponent, computed, watch, reactive, toRefs, ref, onMounted } from '@vue/runtime-core'
 import dayjs from 'dayjs'
 import { useStore } from 'vuex'
 export default defineComponent({
@@ -45,8 +45,10 @@ export default defineComponent({
     const audio = ref('')
 
     onMounted(() => {
-      audio.value.currentTime = $store.state.currentPlayTime
-      audio.value.load()
+      if (state.currentSong) {
+        audio.value.currentTime = $store.state.currentPlayTime
+        audio.value.load()
+      }
     })
 
     // 点击切换播放状态
@@ -115,13 +117,13 @@ export default defineComponent({
 
     // 监听歌变动
     watch(() => $store.state.currentPlay, (newVal) => {
-      state.currentSong = markRaw(newVal)
+      state.currentSong = newVal
     })
 
-    onBeforeUnmount(() => {
-      $store.commit('store_current', { song: state.currentSong, time: audio.value.currentTime })
-      $store.commit('set_index', state.index)
-    })
+    // onBeforeUnmount(() => {
+    //   $store.commit('store_current', { song: state.currentSong, time: audio.value.currentTime })
+    //   $store.commit('set_index', state.index)
+    // })
 
     return {
       handleChangePlay,

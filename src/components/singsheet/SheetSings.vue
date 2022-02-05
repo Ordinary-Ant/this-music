@@ -37,22 +37,25 @@ export default defineComponent({
   setup () {
     const $store = useStore()
     const handleAddSong = async (song) => {
-      const isCanListen = await request('/check/music', { id: song.id })
-      if (isCanListen.success) {
-        const obj = {
-          id: song.id,
-          url: song.mp3url,
-          name: song.name,
-          ator: song.ar.map(a => a.name).join('/'),
-          al: song.al,
-          alia: song.alia,
-          publishTime: song.publishTime,
-          mvid: song.mv,
-          dt: song.dt
+      try {
+        const isCanListen = await request('/check/music', { id: song.id })
+        const songUrl = await request('/song/url', { id: song.id })
+        if (isCanListen.success) {
+          const obj = {
+            id: song.id,
+            url: songUrl.data[0],
+            name: song.name,
+            ator: song.ar.map(a => a.name).join('/'),
+            al: song.al,
+            alia: song.alia,
+            publishTime: song.publishTime,
+            mvid: song.mv,
+            dt: song.dt
+          }
+          $store.commit('add_song', obj)
         }
-        $store.commit('add_song', obj)
-      } else {
-        console.log(isCanListen.message)
+      } catch (error) {
+        console.log('亲爱的,暂无版权')
       }
     }
 

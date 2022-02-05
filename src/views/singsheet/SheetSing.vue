@@ -28,17 +28,17 @@ export default defineComponent({
         return track
       })
       const songs = await request('/song/detail', { ids: songsId.join(',') })
-      const songsurl = await request('/song/url', { id: songsId.join(',') })
-      if (songs.songs && songsurl.data) {
-        for (let i = 0; i < songs.songs.length; i++) {
-          for (let j = 0; j < songsurl.data.length; j++) {
-            if (songs.songs[i].id === songsurl.data[j].id) {
-              songs.songs[i].mp3url = songsurl.data[j]
-              break
-            }
-          }
-        }
-      }
+      // const songsurl = await request('/song/url', { id: songsId.join(',') })
+      // if (songs.songs && songsurl.data) {
+      //   for (let i = 0; i < songs.songs.length; i++) {
+      //     for (let j = 0; j < songsurl.data.length; j++) {
+      //       if (songs.songs[i].id === songsurl.data[j].id) {
+      //         songs.songs[i].mp3url = songsurl.data[j]
+      //         break
+      //       }
+      //     }
+      //   }
+      // }
       state.songs = markRaw(songs.songs)
     }
 

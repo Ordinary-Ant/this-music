@@ -4,53 +4,53 @@
       <div class="local">
         <span>地区</span>
         <ul @click="handleSetArea">
-            <li><a data-area="-1">全部</a></li>
-            <li><a data-area="7">华语</a></li>
-            <li><a data-area="96">欧美</a></li>
-            <li><a data-area="8">日本</a></li>
-            <li><a data-area="16">韩国</a></li>
-            <li><a data-area="0">其他</a></li>
+          <li><a data-area="-1">全部</a></li>
+          <li><a data-area="7">华语</a></li>
+          <li><a data-area="96">欧美</a></li>
+          <li><a data-area="8">日本</a></li>
+          <li><a data-area="16">韩国</a></li>
+          <li><a data-area="0">其他</a></li>
         </ul>
       </div>
       <div class="gender">
         <span>类别</span>
         <ul @click="handleSetType">
-            <li><a data-type="-1">全部</a></li>
-            <li><a data-type="1">男歌手</a></li>
-            <li><a data-type="2">女歌手</a></li>
-            <li><a data-type="3">乐队组合</a></li>
+          <li><a data-type="-1">全部</a></li>
+          <li><a data-type="1">男歌手</a></li>
+          <li><a data-type="2">女歌手</a></li>
+          <li><a data-type="3">乐队组合</a></li>
         </ul>
       </div>
       <div class="initial">
         <span>筛选</span>
         <ul @click="handleSetInitial">
-            <li><a>A</a></li>
-            <li><a>B</a></li>
-            <li><a>C</a></li>
-            <li><a>D</a></li>
-            <li><a>E</a></li>
-            <li><a>F</a></li>
-            <li><a>G</a></li>
-            <li><a>H</a></li>
-            <li><a>I</a></li>
-            <li><a>J</a></li>
-            <li><a>K</a></li>
-            <li><a>L</a></li>
-            <li><a>M</a></li>
-            <li><a>N</a></li>
-            <li><a>O</a></li>
-            <li><a>P</a></li>
-            <li><a>Q</a></li>
-            <li><a>R</a></li>
-            <li><a>S</a></li>
-            <li><a>T</a></li>
-            <li><a>U</a></li>
-            <li><a>V</a></li>
-            <li><a>W</a></li>
-            <li><a>X</a></li>
-            <li><a>Y</a></li>
-            <li><a>Z</a></li>
-            <li><a>#</a></li>
+          <li><a>A</a></li>
+          <li><a>B</a></li>
+          <li><a>C</a></li>
+          <li><a>D</a></li>
+          <li><a>E</a></li>
+          <li><a>F</a></li>
+          <li><a>G</a></li>
+          <li><a>H</a></li>
+          <li><a>I</a></li>
+          <li><a>J</a></li>
+          <li><a>K</a></li>
+          <li><a>L</a></li>
+          <li><a>M</a></li>
+          <li><a>N</a></li>
+          <li><a>O</a></li>
+          <li><a>P</a></li>
+          <li><a>Q</a></li>
+          <li><a>R</a></li>
+          <li><a>S</a></li>
+          <li><a>T</a></li>
+          <li><a>U</a></li>
+          <li><a>V</a></li>
+          <li><a>W</a></li>
+          <li><a>X</a></li>
+          <li><a>Y</a></li>
+          <li><a>Z</a></li>
+          <li><a>#</a></li>
         </ul>
       </div>
     </div>
@@ -79,7 +79,6 @@ export default defineComponent({
       } else {
         all = await request('/artist/list', { type: state.type, area: state.area, limit: 35 })
       }
-      console.log(all)
       state.singers = all.artists
     }
 

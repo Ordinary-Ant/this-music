@@ -1,7 +1,7 @@
 <template>
   <div class="RecommdendMV-container">
-    <div class="title">
-      推荐MV<i class="iconfont icon-xiangyou1" @click="$router.push('/recommendmv')"></i>
+    <div class="title" @click="$router.push('/recommendmv')">
+      推荐MV<i class="iconfont icon-xiangyou1"></i>
     </div>
     <div class="RecommdendMV-list">
       <div class="list-item" v-for="mv in mvDoor" :key="mv.id">
@@ -42,6 +42,7 @@ export default defineComponent({
     color: #fff;
     font-size: 22px;
     font-weight: bold;
+    cursor: pointer;
     i{
       font-size: 20px;
       margin-left: 5px;

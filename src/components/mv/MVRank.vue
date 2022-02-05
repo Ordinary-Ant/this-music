@@ -1,7 +1,7 @@
 <template>
   <div class="mvRank-container">
-    <div class="mvRank-title">
-      排行榜<i class="iconfont icon-xiangyou1" @click="$router.push('/mvranking')"></i>
+    <div class="mvRank-title" @click="$router.push('/mvranking')">
+      排行榜<i class="iconfont icon-xiangyou1"></i>
     </div>
     <div class="mvRank-list">
       <div class="mvRank-item" v-for="(item, index) in rankList" :key="item.id">
@@ -45,6 +45,7 @@ export default defineComponent({
     letter-spacing: 3px;
     font-weight: bold;
     margin-bottom: 20px;
+    cursor: pointer;
   }
   .mvRank-list{
     display: flex;

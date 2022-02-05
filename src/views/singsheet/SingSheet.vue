@@ -5,11 +5,15 @@
       <div class="classes" v-for="(items, index) in Category" :key="index">
         <span>{{ CategoryName[index] }}</span>
         <ul>
-          <li v-for="(item, index) in items" :key="index"><a @click="handleSetCat(item.name)">{{ item.name }}</a></li>
+          <li v-for="(item, index) in items" :key="index" :class="cat === item.name ? 'show' : ''"><a @click="handleSetCat(item.name)">{{ item.name }}</a></li>
         </ul>
       </div>
     </div>
     <SheetList :allSheet="allSheet"/>
+    <div class="page-container">
+      <el-pagination background layout="prev, pager, next" :total="total" :page-size="30">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -27,7 +31,8 @@ export default defineComponent({
       recommSheet: [],
       allSheet: [],
       CategoryName: ['语言', '风格', '场景', '情感', '主题'],
-      cat: ''
+      cat: '',
+      total: 0
     })
     // 获取所有歌单和精品歌单
     const getSheetsState = async () => {
@@ -43,11 +48,13 @@ export default defineComponent({
     const getSheets = async () => {
       let allSheet = []
       if (state.cat !== '') {
-        allSheet = await request('/top/playlist', { cat: state.cat, limit: 24 })
+        allSheet = await request('/top/playlist', { cat: state.cat, limit: 30 })
       } else {
-        allSheet = await request('/top/playlist', { limit: 24 })
+        allSheet = await request('/top/playlist', { limit: 30 })
       }
+      console.log(allSheet)
       state.allSheet = allSheet.playlists
+      state.total = allSheet.total
     }
 
     const handleSetCat = (name) => {
@@ -75,7 +82,7 @@ export default defineComponent({
   .sheet-class{
     box-sizing: border-box;
     padding: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     .classes{
       display: flex;
       flex-direction: row;
@@ -100,14 +107,38 @@ export default defineComponent({
         flex-wrap: wrap;
         margin: 0;
         li{
-          margin: 0 20px;
+          margin: 3px 10px;
           color: #ccc;
           font-size: 14px;
           cursor: pointer;
-          padding: 10px 0;
+          padding: 5px 5px;
+          border-radius: 10px;
+          transition: all .5s ease-in-out;
         }
       }
     }
+  }
+  .page-container{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .el-pagination.is-background /deep/ .el-pager li{
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+    }
+    .el-pagination /deep/ .btn-prev,.el-pagination /deep/ .btn-next {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+}
+.show{
+  background-image: linear-gradient(to right, #acb6e5 , #86fde8);
+  a{
+    color: #fff;
   }
 }
 </style>
