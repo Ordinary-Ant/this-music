@@ -37,6 +37,7 @@ export default defineComponent({
   setup () {
     const $store = useStore()
     const handleAddSong = async (song) => {
+      console.log(song)
       try {
         const isCanListen = await request('/check/music', { id: song.id })
         const songUrl = await request('/song/url', { id: song.id })

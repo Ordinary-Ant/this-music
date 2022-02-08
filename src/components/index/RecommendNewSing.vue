@@ -6,8 +6,8 @@
     <div class="song-list">
       <div class="list-item" v-for="sing in newSing" :key="sing.id">
         <div class="item-image">
-          <i class="iconfont icon-24gl-play"></i>
-          <img :src="sing.picUrl + '?param=90y90'" alt="" @click="$router.push('/player')">
+          <i class="iconfont icon-24gl-play" @click="handlePlay(sing.id)"></i>
+          <img :src="sing.picUrl + '?param=90y90'" alt="">
         </div>
         <div class="item-title">
           <p class="sing-info">{{ sing.name }}</p>
@@ -20,6 +20,8 @@
 
 <script>
 import { defineComponent } from '@vue/runtime-core'
+import request from '@/api/request'
+import { useStore } from 'vuex'
 export default defineComponent({
   name: 'RecommendNewSing',
   props: {
@@ -29,7 +31,36 @@ export default defineComponent({
     }
   },
   setup () {
-    return {}
+    const $store = useStore()
+    // 添加音乐并播放
+    const handlePlay = async (id) => {
+      try {
+        const isCanListen = await request('/check/music', { id })
+        const songs = await request('/song/detail', { ids: id })
+        const song = songs.songs[0]
+        const songUrl = await request('/song/url', { id })
+        if (isCanListen.success) {
+          const obj = {
+            id: song.id,
+            url: songUrl.data[0],
+            name: song.name,
+            ator: song.ar.map(a => a.name).join('/'),
+            al: song.al,
+            alia: song.alia,
+            publishTime: song.publishTime,
+            mvid: song.mv,
+            dt: song.dt
+          }
+          $store.commit('add_song', obj)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    return {
+      handlePlay
+    }
   }
 })
 </script>

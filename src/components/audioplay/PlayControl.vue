@@ -45,7 +45,7 @@ export default defineComponent({
     const audio = ref('')
 
     onMounted(() => {
-      if (state.currentSong) {
+      if (state.currentSong.id) {
         audio.value.currentTime = $store.state.currentPlayTime
         audio.value.load()
       }
@@ -118,6 +118,9 @@ export default defineComponent({
     // 监听歌变动
     watch(() => $store.state.currentPlay, (newVal) => {
       state.currentSong = newVal
+    })
+    watch(() => $store.state.currentIndex, (newVal) => {
+      state.index = newVal
     })
 
     // onBeforeUnmount(() => {

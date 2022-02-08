@@ -55,6 +55,10 @@
       </div>
     </div>
     <SingerList :singers="singers"/>
+    <div class="page-container">
+      <div class="prev-text" @click="handlePrev"><i class="iconfont icon-angle-double-left"></i></div>
+      <div class="next-text" @click="handleNext"><i class="iconfont icon-angle-double-right"></i></div>
+    </div>
   </div>
 </template>
 <script>
@@ -68,18 +72,35 @@ export default defineComponent({
       singers: [],
       initial: '',
       type: -1,
-      area: -1
+      area: -1,
+      offset: 0,
+      more: true
     })
 
     // 获取所有歌手信息
-    const getSingers = async () => {
+    const getSingers = async (offset = 0) => {
       let all
       if (state.initial !== '') {
-        all = await request('/artist/list', { type: state.type, area: state.area, initial: state.initial, limit: 35 })
+        all = await request('/artist/list', { type: state.type, area: state.area, initial: state.initial, limit: 35, offset })
       } else {
-        all = await request('/artist/list', { type: state.type, area: state.area, limit: 35 })
+        all = await request('/artist/list', { type: state.type, area: state.area, limit: 35, offset })
       }
+      state.more = all.more
       state.singers = all.artists
+    }
+
+    // 当前页数修改
+    const handleNext = () => {
+      if (state.more) {
+        state.offset += 35
+        getSingers(state.offset)
+      }
+    }
+    // 当前页数修改
+    const handlePrev = () => {
+      if (state.offset <= 0) return
+      state.offset -= 35
+      getSingers(state.offset)
     }
 
     // 根据类型搜索歌手
@@ -105,7 +126,9 @@ export default defineComponent({
       ...toRefs(state),
       handleSetType,
       handleSetArea,
-      handleSetInitial
+      handleSetInitial,
+      handlePrev,
+      handleNext
     }
   },
   components: {
@@ -151,6 +174,21 @@ export default defineComponent({
     }
     .local,.gender{
       margin-bottom: 20px;
+    }
+  }
+  .page-container{
+    height: 50px;
+    // margin-top: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    .prev-text,.next-text{
+      cursor: pointer;
+      i{
+        font-size: 40px;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255,255,255,.5);
+      }
     }
   }
 }

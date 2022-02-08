@@ -11,7 +11,7 @@
     </div>
     <SheetList :allSheet="allSheet"/>
     <div class="page-container">
-      <el-pagination background layout="prev, pager, next" :total="total" :page-size="30">
+      <el-pagination background layout="pager" :total="total" :page-size="30" @current-change="handleUpdatePage">
       </el-pagination>
     </div>
   </div>
@@ -44,22 +44,27 @@ export default defineComponent({
         state.Category[c.category].push(c)
       })
     }
-
-    const getSheets = async () => {
+    // 获取歌单
+    const getSheets = async (offset = 0) => {
       let allSheet = []
       if (state.cat !== '') {
-        allSheet = await request('/top/playlist', { cat: state.cat, limit: 30 })
+        allSheet = await request('/top/playlist', { cat: state.cat, limit: 30, offset })
       } else {
-        allSheet = await request('/top/playlist', { limit: 30 })
+        allSheet = await request('/top/playlist', { limit: 30, offset })
       }
-      console.log(allSheet)
       state.allSheet = allSheet.playlists
       state.total = allSheet.total
     }
-
+    // 根据类型获取歌单
     const handleSetCat = (name) => {
       state.cat = name
       getSheets()
+    }
+
+    // 当前页数修改
+    const handleUpdatePage = (page) => {
+      const offset = (page - 1) * 30
+      getSheets(offset)
     }
 
     onMounted(() => {
@@ -67,7 +72,8 @@ export default defineComponent({
     })
     return {
       ...toRefs(state),
-      handleSetCat
+      handleSetCat,
+      handleUpdatePage
     }
   },
   components: {

@@ -1,6 +1,6 @@
 <template>
   <div class="songinfo">
-    <img :src="currentSong.al ? currentSong.al.picUrl + '?param=70y70' : '@/assets/awator.webp'" alt="" @click="$router.push('/player')">
+    <img :src="currentSong.al ? currentSong.al.picUrl + '?param=70y70' : '@/assets/awator.webp'" alt="无音乐" @click="$router.push('/player')">
     <div class="info">
       <span class="song-name">{{ currentSong.name || 'xxx' }}</span>
       <span class="song-ator">{{ currentSong.ator || 'xxx' }}</span>

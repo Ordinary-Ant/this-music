@@ -9,20 +9,21 @@
         <span>地区</span>
         <ul @click="handleSetArea">
           <li :class="area === '全部' ? 'show' : ''">全部</li>
-          <li :class="area === '华语' ? 'show' : ''">华语</li>
+          <li :class="area === '内地' ? 'show' : ''">内地</li>
           <li :class="area === '欧美' ? 'show' : ''">欧美</li>
           <li :class="area === '日本' ? 'show' : ''">日本</li>
           <li :class="area === '韩国' ? 'show' : ''">韩国</li>
-          <li :class="area === '其他' ? 'show' : ''">其他</li>
+          <li :class="area === '港台' ? 'show' : ''">港台</li>
         </ul>
       </div>
       <div class="gender">
         <span>类别</span>
         <ul @click="handleSetType">
           <li :class="type === '全部' ? 'show' : ''">全部</li>
-          <li :class="type === '男歌手' ? 'show' : ''">男歌手</li>
-          <li :class="type === '女歌手' ? 'show' : ''">女歌手</li>
-          <li :class="type === '乐队组合' ? 'show' : ''">乐队组合</li>
+          <li :class="type === '官方版' ? 'show' : ''">官方版</li>
+          <li :class="type === '原生' ? 'show' : ''">原生</li>
+          <li :class="type === '现场版' ? 'show' : ''">现场版</li>
+          <li :class="type === '网易出品' ? 'show' : ''">网易出品</li>
         </ul>
       </div>
       <div class="sort">
@@ -35,6 +36,10 @@
       </div>
     </div>
     <VideoList :video="allMv"/>
+    <div class="page-container">
+      <el-pagination background layout="pager" :total="total" :page-size="28" @current-change="handleUpdatePage">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -50,7 +55,8 @@ export default defineComponent({
       allMv: [],
       type: '全部',
       area: '全部',
-      order: '上升最快'
+      order: '上升最快',
+      total: 0
     })
 
     // 获取所有MV数据
@@ -61,9 +67,16 @@ export default defineComponent({
     }
 
     // 获取MV数据
-    const getMV = async () => {
-      const mv = await request('/mv/all', { type: state.type, area: state.area, order: state.order })
+    const getMV = async (offset = 0) => {
+      const mv = await request('/mv/all', { type: state.type, area: state.area, order: state.order, offset, limit: 28 })
       state.allMv = markRaw(mv.data)
+      state.total = mv.count
+    }
+
+    // 当前页数修改
+    const handleUpdatePage = (page) => {
+      const offset = (page - 1) * 28
+      getMV(offset)
     }
 
     // 根据地区获取MV数据
@@ -93,7 +106,8 @@ export default defineComponent({
       ...toRefs(state),
       handleSetArea,
       handleSetType,
-      handleSetOrder
+      handleSetOrder,
+      handleUpdatePage
     }
   },
   components: {
@@ -147,6 +161,22 @@ export default defineComponent({
           color: #fff;
         }
       }
+    }
+  }
+  .page-container{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .el-pagination.is-background /deep/ .el-pager li{
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+    }
+    .el-pagination /deep/ .btn-prev,.el-pagination /deep/ .btn-next {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
     }
   }
 }
