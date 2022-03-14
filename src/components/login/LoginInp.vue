@@ -1,7 +1,7 @@
 <template>
   <h1>账号登录</h1>
   <el-form
-    ref="ruleForm"
+    ref="ruleFormRef"
     :model="ruleForm"
     :rules="rules"
     label-width="120px"
@@ -17,7 +17,7 @@
       <el-input v-model="ruleForm.capture"></el-input>
     </el-form-item> -->
     <el-form-item>
-      <el-button type="success" round @click="submitForm('ruleForm')">登录</el-button>
+      <el-button type="success" round @click="submitForm(ruleFormRef)">登录</el-button>
     </el-form-item>
     <section class="btn-Group">
       <el-button type="warning" icon="el-icon-phone" circle></el-button>
@@ -29,16 +29,17 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent, reactive, ref } from '@vue/runtime-core'
 export default defineComponent({
   name: 'LoginInp',
   setup () {
-    const ruleForm = {
+    const ruleFormRef = ref()
+    const ruleForm = reactive({
       cell: '',
       password: '',
       capture: ''
-    }
-    const rules = {
+    })
+    const rules = reactive({
       cell: [
         {
           required: true,
@@ -60,27 +61,29 @@ export default defineComponent({
         },
         {
           min: 8,
+          max: 11,
           message: '密码最少为8位',
           trigger: 'blur'
         }
       ]
+    })
+
+    const submitForm = async (formEl) => {
+      if (!formEl) return
+      await formEl.validate((valid, fields) => {
+        if (valid) {
+          console.log('submit!')
+        } else {
+          console.log('error submit!', fields)
+        }
+      })
     }
 
     return {
       ruleForm,
-      rules
-    }
-  },
-  methods: {
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!')
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      ruleFormRef,
+      rules,
+      submitForm
     }
   }
 })

@@ -21,7 +21,7 @@
         <ul @click="handleSetType">
           <li :class="type === '全部' ? 'show' : ''">全部</li>
           <li :class="type === '官方版' ? 'show' : ''">官方版</li>
-          <li :class="type === '原生' ? 'show' : ''">原生</li>
+          <!-- <li :class="type === '原生' ? 'show' : ''">原生</li> -->
           <li :class="type === '现场版' ? 'show' : ''">现场版</li>
           <li :class="type === '网易出品' ? 'show' : ''">网易出品</li>
         </ul>
@@ -68,6 +68,7 @@ export default defineComponent({
 
     // 获取MV数据
     const getMV = async (offset = 0) => {
+      // console.log(state.order, state.type)
       const mv = await request('/mv/all', { type: state.type, area: state.area, order: state.order, offset, limit: 28 })
       state.allMv = markRaw(mv.data)
       state.total = mv.count
