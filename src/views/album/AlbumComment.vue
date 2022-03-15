@@ -4,11 +4,11 @@
 </template>
 <script>
 import { defineComponent } from '@vue/runtime-core'
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
 export default defineComponent({
   name: 'AlbumComment',
   setup () {
-    const $store = useStore()
+    // const $store = useStore()
     return {
     }
   }

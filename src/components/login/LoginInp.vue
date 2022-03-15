@@ -1,89 +1,33 @@
 <template>
   <h1>账号登录</h1>
-  <el-form
-    ref="ruleFormRef"
-    :model="ruleForm"
-    :rules="rules"
-    label-width="120px"
-    class="demo-ruleForm"
-  >
-    <el-form-item prop="cell">
-      <el-input v-model="ruleForm.cell" placeholder="请输入账号"></el-input>
-    </el-form-item>
-    <el-form-item prop="password">
-      <el-input v-model="ruleForm.password" placeholder="请输入密码"></el-input>
-    </el-form-item>
-    <!-- <el-form-item prop="capture">
-      <el-input v-model="ruleForm.capture"></el-input>
-    </el-form-item> -->
-    <el-form-item>
-      <el-button type="success" round @click="submitForm(ruleFormRef)">登录</el-button>
-    </el-form-item>
-    <section class="btn-Group">
-      <el-button type="warning" icon="el-icon-phone" circle></el-button>
-      <el-button type="danger" icon="el-icon-full-screen" circle></el-button>
-      <el-button type="primary" icon="el-icon-message" circle></el-button>
-    </section>
-  </el-form>
-  <section class="verify">登录即已同意<span>《用户协议》《隐私政策》《中国移动认证服务协议》</span></section>
+  <router-view />
+  <section class="btn-Group">
+    <el-button @click="typeLogin('Phone')" type="warning" icon="el-icon-phone" v-if="type !== 'Phone'" circle></el-button>
+    <el-button @click="typeLogin('Qr')" type="danger" icon="el-icon-full-screen" v-if="type !== 'Qr'"  circle></el-button>
+    <el-button @click="typeLogin('Email')" type="primary" icon="el-icon-message" v-if="type !== 'Email'"  circle></el-button>
+  </section>
+  <section class="verify">登录即已同意<span>《用户协议》《隐私政策》</span></section>
 </template>
 
 <script>
-import { defineComponent, reactive, ref } from '@vue/runtime-core'
+import { defineComponent, reactive, toRefs } from '@vue/runtime-core'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'LoginInp',
   setup () {
-    const ruleFormRef = ref()
-    const ruleForm = reactive({
-      cell: '',
-      password: '',
-      capture: ''
-    })
-    const rules = reactive({
-      cell: [
-        {
-          required: true,
-          message: '账号不可为空',
-          trigger: 'blur'
-        },
-        {
-          min: 11,
-          max: 11,
-          message: '格式错误',
-          trigger: 'blur'
-        }
-      ],
-      password: [
-        {
-          required: true,
-          message: '密码不可为空',
-          trigger: 'blur'
-        },
-        {
-          min: 8,
-          max: 11,
-          message: '密码最少为8位',
-          trigger: 'blur'
-        }
-      ]
+    const $router = useRouter()
+    const state = reactive({
+      type: 'Qr'
     })
 
-    const submitForm = async (formEl) => {
-      if (!formEl) return
-      await formEl.validate((valid, fields) => {
-        if (valid) {
-          console.log('submit!')
-        } else {
-          console.log('error submit!', fields)
-        }
-      })
+    const typeLogin = (type) => {
+      state.type = type
+      $router.push({ name: type + 'Login' })
     }
 
     return {
-      ruleForm,
-      ruleFormRef,
-      rules,
-      submitForm
+      ...toRefs(state),
+      typeLogin
     }
   }
 })
@@ -100,24 +44,21 @@ h1{
   bottom: 10px;
   width: 340px;
   position: absolute;
-  font-size: 14px;
+  font-size: 12px;
   color: #666;
   text-align: center;
   span{
     color: #f6f6f6;
   }
 }
-.el-form-item /deep/ .el-form-item__content{
-  margin-left: 0 !important;
-}
-.el-form-item /deep/ .el-button{
-  width: 100%;
-  letter-spacing: 3px;
-}
+
 .btn-Group{
   position: absolute;
   bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
+  button {
+    margin: 0 10px;
+  }
 }
 </style>

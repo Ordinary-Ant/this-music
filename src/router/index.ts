@@ -2,6 +2,9 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Index from '@/views/index/index.vue'
 import Display from '@/views/display/Display.vue'
 const Login = () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue')
+const QrLogin = () => import(/* webpackChunkName: "Station" */ '../views/login/QrLogin.vue')
+const PhoneLogin = () => import(/* webpackChunkName: "Station" */ '../views/login/PhoneLogin.vue')
+const EmailLogin = () => import(/* webpackChunkName: "Station" */ '../views/login/EmailLogin.vue')
 const Ranking = () => import(/* webpackChunkName: "Ranking" */ '../views/ranking/Ranking.vue')
 const Singer = () => import(/* webpackChunkName: "Singer" */ '../views/singer/Singer.vue')
 const SingSheet = () => import(/* webpackChunkName: "SingSheet" */ '../views/singsheet/SingSheet.vue')
@@ -195,7 +198,28 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'LoginIndex',
-    component: Login
+    component: Login,
+    children: [
+      {
+        path: '',
+        redirect: { name: 'QrLogin' }
+      },
+      {
+        path: 'qrlogin',
+        name: 'QrLogin',
+        component: QrLogin
+      },
+      {
+        path: 'phonelogin',
+        name: 'PhoneLogin',
+        component: PhoneLogin
+      },
+      {
+        path: 'emaillogin',
+        name: 'EmailLogin',
+        component: EmailLogin
+      }
+    ]
   }
 ]
 

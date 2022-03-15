@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import { computed, defineComponent, markRaw, onMounted, ref } from '@vue/runtime-core'
+import { computed, defineComponent, markRaw, ref } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 export default defineComponent({
   name: 'AlbumInfo',
