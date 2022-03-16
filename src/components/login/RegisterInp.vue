@@ -1,7 +1,7 @@
 <template>
   <h1>账号注册</h1>
   <el-form
-    ref="ruleForm"
+    ref="ruleFormRef"
     :model="ruleForm"
     :rules="rules"
     label-width="120px"
@@ -12,28 +12,32 @@
     </el-form-item>
     <el-form-item prop="capture">
       <el-input v-model="ruleForm.capture" placeholder="请输入验证码"></el-input>
+      <el-button type="primary" style="width: 40%; margin-left: 5px;" round @click="handleGetCapture(ruleFormRef)">获取验证码</el-button>
     </el-form-item>
     <el-form-item prop="password">
       <el-input v-model="ruleForm.password" placeholder="请输入密码"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="danger" round @click="handleRegister">注册</el-button>
+      <el-button type="success" style="margin: 0 5px;" round @click="submitForm(ruleFormRef)">注册</el-button>
       <el-button type="default" plain round @click="$router.push('/')">游客登录</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
-import { defineComponent } from '@vue/runtime-core'
+import request from '@/api/request'
+import { defineComponent, reactive, ref } from '@vue/runtime-core'
+import { ElMessage } from 'element-plus'
 export default defineComponent({
   name: 'RegisterInp',
   setup () {
-    const ruleForm = {
+    const ruleFormRef = ref(null)
+    const ruleForm = reactive({
       cell: '',
       password: '',
       capture: ''
-    }
-    const rules = {
+    })
+    const rules = reactive({
       cell: [
         {
           required: true,
@@ -72,15 +76,75 @@ export default defineComponent({
           trigger: 'blur'
         }
       ]
+    })
+
+    // 发送验证码
+    const handleGetCapture = async () => {
+      let flag = false
+      let message = ''
+      if (ruleForm.cell !== '' && ruleForm.cell.length === 11) {
+        const sendStatus = await request('/captcha/sent', { phone: ruleForm.cell })
+        if (sendStatus.code == '200') {
+          message = '验证码发送成功'
+          flag = true
+        } else {
+          message = sendStatus.msg
+        }
+      }
+      if (ruleForm.cell === '') {
+        message = '手机号不可为空'
+      } else if (ruleForm.cell.length !== 11) {
+        message = '手机号格式错误'
+      }
+      ElMessage({
+        message,
+        type: flag ? 'success' : 'warning'
+      })
     }
 
-    const handleRegister = () => {
-      console.log(111)
+    // 验证表单并提交登录请求
+    const submitForm = async (formEl) => {
+      if (!formEl) return
+      await formEl.validate(async (valid) => {
+        if (valid) {
+          let flag = false
+          let message = ''
+          try {
+            const validCapture = await request('/captcha/verify', { phone: ruleForm.cell, captcha: ruleForm.capture })
+            if (!validCapture.data) {
+              message = validCapture.message
+            } else {
+              const isRegister = await request('/cellphone/existence/check', { phone: ruleForm.cell })
+              if (isRegister.exist) {
+                message = '账号已存在，请前往登录'
+              } else {
+                const registerStatus = await request('/register/cellphone', { phone: ruleForm.cell, captcha: ruleForm.capture, password: ruleForm.password, nickname: '' })
+                console.log(registerStatus)
+                // flag = true
+                // message = '登录成功!!!'
+                // window.localStorage.setItem('LOGIN_COOKIE', JSON.stringify(loginStatus.cookie))
+                // $router.push('/')
+              }
+            }
+          } catch (error) {
+            if (error.message.indexOf('503') !== -1) {
+              message = '验证码已失效，请重新获取'
+            }
+          }
+          ElMessage({
+            message,
+            type: flag ? 'success' : 'warning'
+          })
+        }
+      })
     }
+
     return {
-      handleRegister,
       ruleForm,
-      rules
+      rules,
+      ruleFormRef,
+      submitForm,
+      handleGetCapture
     }
   }
 })
@@ -108,11 +172,12 @@ h1{
   }
 }
 .el-form-item /deep/ .el-form-item__content{
+  display: flex;
+  justify-content: space-between;
   margin-left: 0 !important;
 }
 .el-form-item /deep/ .el-button{
   margin-left: 0;
-  margin-bottom: 10px;
   width: 100%;
   letter-spacing: 3px;
 }

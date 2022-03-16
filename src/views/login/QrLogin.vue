@@ -10,17 +10,17 @@
         <div class="image-slot">Loading<span class="dot">...</span></div>
       </template>
     </el-image>
-    <div class="qr-cover">
+    <div class="qr-cover" v-if="messageType !== ''">
       <div class="cover-message">
-        <div class="qr-loading">
+        <div class="qr-loading" v-if="messageType === 'loading'">
           <el-icon class="is-loading">
             <loading />
           </el-icon>
           扫码成功,请稍等
         </div>
-        <div class="qr-success">
-          <el-icon class="is-loading">
-            <loading />
+        <div class="qr-success" v-if="messageType !== 'success'">
+          <el-icon>
+            <check />
           </el-icon>
           登录成功,跳转中
         </div>
@@ -29,8 +29,8 @@
   </div>
 </template>
 <script>
-import { defineComponent, reactive, toRefs, onMounted } from '@vue/runtime-core'
-import { Picture as IconPicture, Loading } from '@element-plus/icons-vue'
+import { defineComponent, reactive, toRefs, onMounted, onUnmounted } from '@vue/runtime-core'
+import { Picture as IconPicture, Loading, Check } from '@element-plus/icons-vue'
 import request from '@/api/request'
 import { useRouter } from 'vue-router'
 export default defineComponent({
@@ -85,13 +85,20 @@ export default defineComponent({
       getQr()
     })
 
+    onUnmounted(() => {
+      console.log(111)
+      clearTimeout(state.timer)
+      state.timer = null
+    })
+
     return {
       ...toRefs(state)
     }
   },
   components: {
     IconPicture,
-    Loading
+    Loading,
+    Check
   }
 })
 </script>
@@ -104,6 +111,7 @@ export default defineComponent({
   letter-spacing: 3px;
 }
 .qrlogin-container-wrap {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -131,5 +139,27 @@ export default defineComponent({
 }
 .qrlogin-container-wrap .image-slot .el-icon {
   font-size: 30px;
+}
+.qr-cover{
+  width: 60%;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, .5);
+  transform: translate(-50%, -50%);
+  .cover-message{
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, .8);
+    padding: 5px;
+    font-size: 14px;
+    i{
+      vertical-align: bottom;
+    }
+  }
 }
 </style>

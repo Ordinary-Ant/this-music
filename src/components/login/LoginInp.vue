@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive, toRefs } from '@vue/runtime-core'
+import { defineComponent, onMounted, reactive, toRefs } from '@vue/runtime-core'
 import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'LoginInp',
@@ -24,6 +24,10 @@ export default defineComponent({
       state.type = type
       $router.push({ name: type + 'Login' })
     }
+
+    onMounted(() => {
+      $router.push({ name: state.type + 'Login' })
+    })
 
     return {
       ...toRefs(state),

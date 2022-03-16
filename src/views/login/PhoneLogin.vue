@@ -21,10 +21,14 @@
   </div>
 </template>
 <script>
+import request from '@/api/request'
 import { defineComponent, reactive, toRefs, ref } from '@vue/runtime-core'
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'PhoneLogin',
   setup () {
+    const $router = useRouter()
     const ruleFormRef = ref()
     const state = reactive({
       ruleForm: {
@@ -57,18 +61,56 @@ export default defineComponent({
 
     // 发送验证码
     const handleGetCapture = async () => {
-      console.log(111)
+      let flag = false
+      let message = ''
+      if (state.ruleForm.cell !== '' && state.ruleForm.cell.length === 11) {
+        const sendStatus = await request('/captcha/sent', { phone: state.ruleForm.cell })
+        if (sendStatus.code == '200') {
+          message = '验证码发送成功'
+          flag = true
+        } else {
+          message = sendStatus.msg
+        }
+      }
+      if (state.ruleForm.cell === '') {
+        message = '手机号不可为空'
+      } else if (state.ruleForm.cell.length !== 11) {
+        message = '手机号格式错误'
+      }
+      ElMessage({
+        message,
+        type: flag ? 'success' : 'warning'
+      })
     }
 
     // 验证表单并提交登录请求
     const submitForm = async (formEl) => {
       if (!formEl) return
-      await formEl.validate((valid, fields) => {
-        console.log(fields)
+      await formEl.validate(async (valid) => {
         if (valid) {
-          console.log('submit!')
-        } else {
-          console.log('error submit!', fields)
+          let flag = false
+          let message = ''
+          try {
+            const validCapture = await request('/captcha/verify', { phone: state.ruleForm.cell, captcha: state.ruleForm.capture })
+            if (!validCapture.data) {
+              message = validCapture.message
+            } else {
+              const loginStatus = await request('/login/cellphone', { phone: state.ruleForm.cell, captcha: state.ruleForm.capture })
+              console.log(loginStatus)
+              // flag = true
+              // message = '登录成功!!!'
+              // window.localStorage.setItem('LOGIN_COOKIE', JSON.stringify(loginStatus.cookie))
+              // $router.push('/')
+            }
+          } catch (error) {
+            if (error.message.indexOf('503') !== -1) {
+              message = '验证码已失效，请重新获取'
+            }
+          }
+          ElMessage({
+            message,
+            type: flag ? 'success' : 'warning'
+          })
         }
       })
     }
@@ -87,10 +129,6 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   margin-left: 0 !important;
-  .capture {
-    margin-left: 5px;
-    width: 40%;
-  }
 }
 .el-form-item /deep/ .el-button{
   width: 100%;
